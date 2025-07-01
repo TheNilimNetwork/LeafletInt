@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { getOpenRouteServiceRoute, type LatLngLiteral as ApiLatLng } from "./actions/getRoute";
 import { terrainSuitabilityCheck, type TerrainSuitabilityCheckInput, type TerrainSuitabilityCheckOutput } from "@/ai/flows/terrain-suitability-check";
 import { Loader2 } from "lucide-react";
+import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css';
 
 // Dynamically import MapDisplay component to ensure Leaflet runs client-side
 const MapDisplay = dynamic(() => import("@/components/map-display"), {
