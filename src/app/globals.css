@@ -1,0 +1,220 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: var(--font-inter), sans-serif; /* Updated to use CSS variable */
+}
+
+@layer base {
+  :root {
+    --background: 248 53% 58%; /* Slate Blue (#6A5ACD) */
+    --foreground: 222.2 84% 4.9%; /* Darker gray for text */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%; /* Saturated blue #4287f5 */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%; /* Lighter gray for secondary elements */
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%; /* Complementary orange #ff9800 */
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%; /* Primary color for rings */
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+
+    /* Sidebar variables (can be kept or adjusted if sidebar is used differently) */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%; /* Dark gray for dark mode */
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%; /* Saturated blue #4287f5 */
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%; /* Complementary orange #ff9800 */
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Leaflet map container specific style */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  border-radius: var(--radius); /* Optional: if map itself should have rounded corners */
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--secondary-foreground) / 0.5);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--secondary-foreground) / 0.7);
+}
+
+/* Leaflet Routing Machine Theming */
+.leaflet-routing-container {
+  background-color: hsl(var(--card) / 0.9) !important;
+  backdrop-filter: blur(4px) !important;
+  border-radius: var(--radius) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+  color: hsl(var(--card-foreground)) !important;
+  padding: 1rem !important;
+  margin-top: 1rem !important; /* Position adjustment */
+  margin-right: 1rem !important; /* Position adjustment */
+  max-height: calc(100vh - 12rem); /* Prevent it from being too tall */
+  overflow-y: auto; /* Add scroll for content overflow */
+}
+
+.leaflet-routing-container h3 {
+  color: hsl(var(--primary)) !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+  padding-bottom: 0.5rem !important;
+  margin-bottom: 0.75rem !important;
+  font-size: 1.125rem !important; /* Larger title */
+}
+
+.leaflet-routing-alt table,
+.leaflet-routing-alt table td,
+.leaflet-routing-alt table th {
+  color: hsl(var(--card-foreground)) !important;
+  border-bottom: 1px solid hsl(var(--border) / 0.5) !important; /* Lighter border for table rows */
+}
+
+.leaflet-routing-alt table tr:last-child td {
+    border-bottom: none !important; /* No border for the last row */
+}
+
+.leaflet-routing-alt table tr:hover td {
+  background-color: hsl(var(--muted) / 0.5) !important;
+}
+
+.leaflet-routing-icon {
+  /* Ensure icons are visible. Default Leaflet icons are SVGs and usually adapt.
+     If using custom icons, they might need specific styling here. */
+  background-size: contain; /* Ensure icons are not cut off */
+}
+
+.leaflet-routing-alternatives-container { /* This is the scrollable part */
+  max-height: calc(100vh - 18rem); /* Adjust based on your layout */
+  overflow-y: auto;
+}
+
+/* Themed scrollbar for the instructions panel itself */
+.leaflet-routing-alternatives-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.leaflet-routing-alternatives-container::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.5) !important;
+  border-radius: 8px;
+}
+.leaflet-routing-alternatives-container::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.6) !important;
+  border-radius: 8px;
+}
+.leaflet-routing-alternatives-container::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.8) !important;
+}
+
+
+/* Dark mode specific adjustments for the routing panel */
+.dark .leaflet-routing-container {
+  background-color: hsl(var(--card) / 0.9) !important;
+  border-color: hsl(var(--border)) !important;
+  color: hsl(var(--card-foreground)) !important;
+}
+
+.dark .leaflet-routing-container h3 {
+  color: hsl(var(--primary)) !important;
+  border-bottom-color: hsl(var(--border)) !important;
+}
+
+.dark .leaflet-routing-alt table,
+.dark .leaflet-routing-alt table td,
+.dark .leaflet-routing-alt table th {
+  color: hsl(var(--card-foreground)) !important;
+  border-bottom-color: hsl(var(--border) / 0.7) !important;
+}
+
+.dark .leaflet-routing-alt table tr:hover td {
+  background-color: hsl(var(--muted) / 0.7) !important;
+}
+
+.dark .leaflet-routing-alternatives-container::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.3) !important;
+}
+.dark .leaflet-routing-alternatives-container::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.7) !important;
+}
+.dark .leaflet-routing-alternatives-container::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.9) !important;
+}
+/* Force the dropdown to appear above the map */
+.radix-select-content {
+  z-index: 9999 !important;
+}
