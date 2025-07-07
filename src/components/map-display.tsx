@@ -295,6 +295,7 @@ const MapDisplay: React.FC<MapDisplayProps> = ({
         locateOptions: {
           maxZoom: 16,
           enableHighAccuracy: true,
+          
         },
       });
 
@@ -434,39 +435,86 @@ const MapDisplay: React.FC<MapDisplayProps> = ({
   }, [startPoint, endPoint, routeData]);
 
   // Helper functions for different route types
-  const handleAirRoute = async (map: L.Map, start: LatLng, end: LatLng) => {
-    try {
-      const startAirport = await getNearestAirport(start.lat, start.lng);
-      const endAirport = await getNearestAirport(end.lat, end.lng);
-      
-      if (!startAirport || !endAirport) {
-        console.warn("Could not find airports for air route");
-        return;
-      }
+const handleAirRoute = async (map: L.Map, start: LatLng, end: LatLng) => {
+  try {
+    const startAirport = await getNearestAirport(start.lat, start.lng);
+    const endAirport = await getNearestAirport(end.lat, end.lng);
 
-      const multiLegGroup = L.featureGroup().addTo(map);
-      routeLayerRef.current = multiLegGroup;
+    if (!startAirport || !endAirport) {
+      console.warn("Could not find airports for air route");
+      return;
+    }
 
-      // Flight line
-      const flightLine = L.polyline([
-        [startAirport.latitude, startAirport.longitude],
-        [endAirport.latitude, endAirport.longitude],
-      ], {
-        color: "blue",
-        weight: 3,
-        dashArray: "5, 10",
-        opacity: 0.8,
-      }).addTo(multiLegGroup);
+    clearInstructionPanel(); // Start fresh
 
+    // === Set up flight polyline ===
+    const multiLegGroup = L.featureGroup().addTo(map);
+    routeLayerRef.current = multiLegGroup;
+
+    const flightLine = L.polyline([
+      [startAirport.latitude, startAirport.longitude],
+      [endAirport.latitude, endAirport.longitude],
+    ], {
+      color: "blue",
+      weight: 3,
+      dashArray: "6, 10",
+      opacity: 0.85,
+    }).addTo(multiLegGroup);
+
+    // === Leg A: Drive to startAirport ===
+    const driveToAirport = L.Routing.control({
+      waypoints: [
+        L.latLng(start.lat, start.lng),
+        L.latLng(startAirport.latitude, startAirport.longitude),
+      ],
+      routeWhileDragging: false,
+      show: false,
+      addWaypoints: false,
+      createMarker: () => null,
+    }).addTo(map);
+    routingControlsRef.current.push(driveToAirport);
+
+    driveToAirport.on('routesfound', function (e1) {
+      const drive1 = e1.routes[0];
+      updateInstructionPanel(drive1.instructions || [], '🚗 Drive to Airport');
+
+      // === Leg B: Add flight instruction ===
       addFlightInstruction(startAirport, endAirport);
 
-      if (multiLegGroup.getBounds().isValid()) {
-        map.fitBounds(multiLegGroup.getBounds(), { padding: [50, 50] });
-      }
-    } catch (error) {
-      console.error("Error creating air route:", error);
-    }
-  };
+      // === Leg C: Drive from endAirport ===
+      const driveFromAirport = L.Routing.control({
+        waypoints: [
+          L.latLng(endAirport.latitude, endAirport.longitude),
+          L.latLng(end.lat, end.lng),
+        ],
+        routeWhileDragging: false,
+        show: false,
+        addWaypoints: false,
+        createMarker: () => null,
+      }).addTo(map);
+      routingControlsRef.current.push(driveFromAirport);
+
+      driveFromAirport.on('routesfound', function (e2) {
+        const drive2 = e2.routes[0];
+        updateInstructionPanel(drive2.instructions || [], '🚗 Drive from Airport');
+      });
+    });
+
+    // === Fit all bounds ===
+    const allPoints = [
+      [start.lat, start.lng],
+      [startAirport.latitude, startAirport.longitude],
+      [endAirport.latitude, endAirport.longitude],
+      [end.lat, end.lng],
+    ];
+    map.fitBounds(L.latLngBounds(allPoints), { padding: [50, 50] });
+
+  } catch (error) {
+    console.error("Error creating air route:", error);
+  }
+};
+
+
 
   const handleShipRoute = async (map: L.Map, start: LatLng, end: LatLng) => {
     try {
@@ -546,7 +594,7 @@ const MapDisplay: React.FC<MapDisplayProps> = ({
             mapRef.current.locate({
               setView: true,
               maxZoom: 16,
-              watch: false,
+              watch: true,
               enableHighAccuracy: true,
             });
           }
@@ -557,7 +605,7 @@ const MapDisplay: React.FC<MapDisplayProps> = ({
           left: 16,
           zIndex: 1000,
           padding: '10px 14px',
-          background: '#007bff',
+          background: '#000000',
           color: 'white',
           border: 'none',
           borderRadius: '5px',
@@ -577,4 +625,4 @@ const MapDisplay: React.FC<MapDisplayProps> = ({
   );
 };
 
-export default MapDisplay;
+export default MapDisplay; 
